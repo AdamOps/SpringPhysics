@@ -120,3 +120,12 @@ float getBlobArea(std::vector<Vertex>& vertices) {
 
 	return area;
 }
+
+void rotateVector(sf::Vector2f& vect, float angle) {
+	float radAngle = angle * (3.1415926 / 180);
+	sf::Vector2f newVect;
+	newVect.x = vect.x * cos(radAngle) - vect.y * sin(radAngle);
+	newVect.y = vect.x * sin(radAngle) + vect.y * cos(radAngle);
+	vect.x = newVect.x;
+	vect.y = newVect.y;
+}

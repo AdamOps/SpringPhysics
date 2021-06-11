@@ -1,6 +1,5 @@
 #include "Vertex.h"
-
-float Vertex::gravity = 0.1f;
+#include "Parameters.h"
 
 Vertex::Vertex(sf::Vector2f passedPosition) {
 	position = passedPosition;
@@ -13,17 +12,29 @@ Vertex::Vertex(sf::Vector2f passedPosition) {
 
 }
 
-void Vertex::updateVertexPosition() {
+Vertex::Vertex(float x, float y) {
+	sf::Vector2f passedPosition(x, y);
+	position = passedPosition;
+	oldPosition = passedPosition;
+
+	vertShape.setFillColor(sf::Color::Magenta);
+	vertShape.setRadius(5.f);
+	vertShape.setOrigin(vertShape.getOrigin().x + vertShape.getRadius(), vertShape.getOrigin().y + vertShape.getRadius());
+	vertShape.setPosition(position);
+}
+
+void Vertex::updateVertexPosition(gameParameters * settings) {
 	float dx = position.x - oldPosition.x;
 	float dy = position.y - oldPosition.y;
 
 	oldPosition = position;
 	position.x += dx;
 	position.y += dy;
-	position.y += gravity;
+	position.x += (*settings).gravity.x;
+	position.y += (*settings).gravity.y;
 }
 
-void Vertex::constrainVertexPosition(int height, int width) {
+void Vertex::constrainVertexPosition(int height, int width, struct gameParameters * settings) {
 	float dx = position.x - oldPosition.x;
 	float dy = position.y - oldPosition.y;
 
@@ -31,27 +42,34 @@ void Vertex::constrainVertexPosition(int height, int width) {
 	float A, B;
 	if (position.x > width) {
 		A = width - position.x;
-		B = position.x + dx - width;
+		B = position.x + dx - width - (*settings).gravity.x;
 		oldPosition.x = position.x + 2 * A;
 		position.x = width - B;
 	}
 	else if (position.x < 0) {
 		A = -position.x;
-		B = dx - A;
+		B = dx - A + (*settings).gravity.x;
 		oldPosition.x = position.x + 2 * A;
 		position.x = -B;
 	}
 
 	if (position.y > height) {
 		A = height - position.y;
-		B = position.y + dy - height - gravity;
+		B = position.y + dy - height - (*settings).gravity.y;
 		oldPosition.y = position.y + 2 * A;
 		position.y = height - B;
 	}
 	else if (position.y < 0) {
 		A = -position.y;
-		B = dy - A + gravity;
+		B = dy - A + (*settings).gravity.y;
 		oldPosition.y = position.y + 2 * A;
 		position.y = -B;
+	}
+}
+
+void Vertex::addFriction(int height, gameParameters * settings) {
+	if (position.x >= height - (*settings).frictionThreshold) {
+		float dx = position.x - oldPosition.x;
+		position.x -= (*settings).friction * dx;
 	}
 }

@@ -1,4 +1,9 @@
 #pragma once
+#include <SFML/Graphics.hpp>
+#include <SFML/Window.hpp>
+#include <vector>
+
+#include "Spring.h"
 #include "Vertex.h"
 
 void getDesktopResolution(int& horizontal, int& vertical);
@@ -15,6 +20,8 @@ float dotProduct(sf::Vector2f vectOne, sf::Vector2f vectTwo);
 
 void setLength(sf::Vector2f &vectorRef, float currLength, float tarLength);
 
-void areaConstraint(std::vector<Vertex>& vertices, float areaTarget, float width, float height, std::vector<int>& randomVert);
+void areaConstraint(std::vector<Vertex> &vertices, float areaTarget, float width, float height, std::vector<int> &randomVert);
 
-float getBlobArea(std::vector<Vertex>& vertices);
+float getBlobArea(std::vector<Vertex> &vertices);
+
+void rotateVector(sf::Vector2f& vect, float angle);
